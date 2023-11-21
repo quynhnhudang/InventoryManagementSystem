@@ -1,0 +1,127 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static List<Product> inventory = new List<Product>();
+
+    static void Main()
+    {
+        while (true)
+        {
+            Console.WriteLine("Inventory Management System");
+            Console.WriteLine("1. Add Product");
+            Console.WriteLine("2. Update Quantity");
+            Console.WriteLine("3. Generate Report");
+            Console.WriteLine("4. Exit");
+
+            int choice = GetChoice(1, 4);
+
+            switch (choice)
+            {
+                case 1:
+                    AddProduct();
+                    break;
+                case 2:
+                    UpdateQuantity();
+                    break;
+                case 3:
+                    GenerateReport();
+                    break;
+                case 4:
+                    Environment.Exit(0);
+                    break;
+            }
+        }
+    }
+
+    static void AddProduct()
+    {
+        Console.Write("Enter product name: ");
+        string name = Console.ReadLine();
+
+        Console.Write("Enter product quantity: ");
+        int quantity = GetIntInput();
+
+        Console.Write("Enter product price: ");
+        decimal price = GetDecimalInput();
+
+        inventory.Add(new Product { Name = name, Quantity = quantity, Price = price });
+
+        Console.WriteLine("Product added successfully!");
+    }
+
+    static void UpdateQuantity()
+    {
+        Console.Write("Enter product name to update quantity: ");
+        string name = Console.ReadLine();
+
+        Product product = inventory.Find(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+        if (product != null)
+        {
+            Console.Write("Enter new quantity: ");
+            int newQuantity = GetIntInput();
+
+            product.Quantity = newQuantity;
+
+            Console.WriteLine("Quantity updated successfully!");
+        }
+        else
+        {
+            Console.WriteLine("Product not found!");
+        }
+    }
+
+    static void GenerateReport()
+    {
+        Console.WriteLine("Inventory Report:");
+        Console.WriteLine("--------------------------------------------------");
+        Console.WriteLine("{0,-20} {1,-10} {2,-10}", "Product Name", "Quantity", "Total Value");
+        Console.WriteLine("--------------------------------------------------");
+
+        foreach (var product in inventory)
+        {
+            Console.WriteLine("{0,-20} {1,-10} {2,-10:C}", product.Name, product.Quantity, product.Quantity * product.Price);
+        }
+
+        Console.WriteLine("--------------------------------------------------");
+    }
+
+    static int GetChoice(int min, int max)
+    {
+        int choice;
+        while (!int.TryParse(Console.ReadLine(), out choice) || choice < min || choice > max)
+        {
+            Console.WriteLine($"Invalid input. Please enter a number between {min} and {max}.");
+        }
+        return choice;
+    }
+
+    static int GetIntInput()
+    {
+        int input;
+        while (!int.TryParse(Console.ReadLine(), out input))
+        {
+            Console.WriteLine("Invalid input. Please enter a valid integer.");
+        }
+        return input;
+    }
+
+    static decimal GetDecimalInput()
+    {
+        decimal input;
+        while (!decimal.TryParse(Console.ReadLine(), out input))
+        {
+            Console.WriteLine("Invalid input. Please enter a valid decimal number.");
+        }
+        return input;
+    }
+}
+
+class Product
+{
+    public string Name { get; set; }
+    public int Quantity { get; set; }
+    public decimal Price { get; set; }
+}
